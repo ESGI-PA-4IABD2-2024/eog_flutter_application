@@ -13,7 +13,7 @@ class _MapPageState extends State<MapPage> {
   late GoogleMapController mapController;
   Location location = Location();
 
-  LatLng _initialPosition = LatLng(45.521563, -122.677433); // Default to any initial position
+  LatLng _initialPosition = LatLng(48.8534, 2.3488);
 
   @override
   void initState() {
@@ -64,17 +64,24 @@ class _MapPageState extends State<MapPage> {
         colorSchemeSeed: Colors.green[700],
       ),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Escape Olympic Games'),
-          elevation: 2,
-        ),
-        body: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _initialPosition,
-            zoom: 11.0,
-          ),
-          myLocationEnabled: true,  // Display the user location button
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: GoogleMap(
+                onMapCreated: _onMapCreated,
+                initialCameraPosition: CameraPosition(
+                  target: _initialPosition,
+                  zoom: 11.0,
+                ),
+                myLocationEnabled: true,
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: Text('Additional content here'),
+              ),
+            ),
+          ],
         ),
       ),
     );
