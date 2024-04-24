@@ -78,8 +78,33 @@ class _MapPageState extends State<MapPage> {
               ),
             ),
             Expanded(
+              flex: 1,
               child: Center(
-                child: Text('Not implemented yet'),
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    children: <Widget>[
+                      const TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Lieu de départ',
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const TextField(
+                        decoration: InputDecoration(
+                            hintText: "Lieu d'arrivée",
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          // TODO: Add logic to center on entered location
+                        },
+                        child: const Text('Chercher'),
+                      ),
+                    ],
+                  ),
+                )
+
               ),
             ),
           ],
