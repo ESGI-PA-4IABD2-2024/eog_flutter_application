@@ -61,9 +61,10 @@ class _MapPageState extends State<MapPage> {
     return MaterialApp(
       theme: ThemeData(
         useMaterial3: true,
-        colorSchemeSeed: Colors.green[700],
+        colorSchemeSeed: Colors.green[200],
       ),
       home: Scaffold(
+
         body: Column(
           children: <Widget>[
             Expanded(
@@ -78,7 +79,7 @@ class _MapPageState extends State<MapPage> {
             ),
             Expanded(
               child: Center(
-                child: Text('Additional content here'),
+                child: Text('Not implemented yet'),
               ),
             ),
           ],

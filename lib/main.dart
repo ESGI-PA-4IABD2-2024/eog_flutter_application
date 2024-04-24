@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_first_proto/map_page/map_page.dart';
+import 'package:flutter_first_proto/navigation_bar.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const MapPage(),
+      home: const NavigationBarApp(),
     );
   }
 }
