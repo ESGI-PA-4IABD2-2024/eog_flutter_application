@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:styled_widget/styled_widget.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -12,8 +13,12 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   late GoogleMapController mapController;
   Location location = Location();
+  LatLng _initialPosition = const LatLng(48.8534, 2.3488);
 
-  LatLng _initialPosition = LatLng(48.8534, 2.3488);
+  String? selectedDepartureLocation;
+  String? selectedArrivalLocation;
+  GlobalKey<FormState> departureKey = GlobalKey<FormState>();
+  GlobalKey<FormState> arrivalKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -50,7 +55,7 @@ class _MapPageState extends State<MapPage> {
       _initialPosition = LatLng(currentLocation.latitude!, currentLocation.longitude!);
       mapController.animateCamera(
         CameraUpdate.newCameraPosition(
-          CameraPosition(target: _initialPosition, zoom: 15.0),
+          CameraPosition(target: _initialPosition, zoom: 11.5),
         ),
       );
     });
@@ -72,39 +77,92 @@ class _MapPageState extends State<MapPage> {
                 onMapCreated: _onMapCreated,
                 initialCameraPosition: CameraPosition(
                   target: _initialPosition,
-                  zoom: 11.0,
+                  zoom: 11.5,
                 ),
                 myLocationEnabled: true,
               ),
             ),
             Expanded(
-              flex: 1,
-              child: Center(
-                child: Container(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    children: <Widget>[
-                      const TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Lieu de départ',
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const TextField(
-                        decoration: InputDecoration(
-                            hintText: "Lieu d'arrivée",
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          // TODO: Add logic to center on entered location
-                        },
-                        child: const Text('Chercher'),
-                      ),
-                    ],
-                  ),
-                )
+              child: SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: <Widget>[
+                        DropdownButtonFormField<String>(
+                          key: departureKey,
+                          value: selectedDepartureLocation,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedDepartureLocation = newValue;
+                            });
+                          },
+                          items: <String>[
+                            'Paris',
+                            'Lyon',
+                            'Marseille',
+                            'Nice',
+                            'Paris',
+                            'Lyon',
+                            'Marseille',
+                            'Nice',
+                            'Paris',
+                            'Lyon',
+                            'Marseille',
+                            'Nice',
+                            'Paris',
+                            'Lyon',
+                            'Marseille',
+                            'Nice',
+                            'Paris',
+                            'Lyon',
+                            'Marseille',
+                            'Nice',
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          decoration: const InputDecoration(
+                            hintText: 'Lieu de départ',
+                          ),
+                        ).padding(bottom: 10),
 
+                        DropdownButtonFormField<String>(
+                          key: arrivalKey,
+                          value: selectedArrivalLocation,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedArrivalLocation = newValue;
+                            });
+                          },
+                          items: <String>[
+                            'New York',
+                            'Los Angeles',
+                            'Chicago',
+                            'San Francisco',
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          decoration: const InputDecoration(
+                            hintText: "Lieu d'arrivée",
+                          ),
+                        ).padding(bottom: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            print('Departure: $selectedDepartureLocation');
+                            print('Arrival: $selectedArrivalLocation');
+
+                          },
+                          child: const Text('Chercher les trajets possibles')
+                              .padding(all: 10),
+                        ),
+                      ],
+                    ),
+                  )
               ),
             ),
           ],
