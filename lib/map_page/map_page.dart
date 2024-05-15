@@ -89,6 +89,7 @@ class _MapPageState extends State<MapPage> {
                     child: Column(
                       children: <Widget>[
                         DropdownButtonFormField<String>(
+                          menuMaxHeight: 250.0,
                           key: departureKey,
                           value: selectedDepartureLocation,
                           onChanged: (String? newValue) {
@@ -129,6 +130,7 @@ class _MapPageState extends State<MapPage> {
                         ).padding(bottom: 10),
 
                         DropdownButtonFormField<String>(
+                          menuMaxHeight: 250.0,
                           key: arrivalKey,
                           value: selectedArrivalLocation,
                           onChanged: (String? newValue) {
