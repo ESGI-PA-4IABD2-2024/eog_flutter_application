@@ -1,3 +1,4 @@
+import 'map_locations.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:styled_widget/styled_widget.dart';
@@ -15,6 +16,9 @@ class _MapPageState extends State<MapPage> {
   Location location = Location();
   LatLng _initialPosition = const LatLng(48.8534, 2.3488);
 
+  late Future<List<String>> _departureLocationsFuture;
+  late Future<List<String>> _arrivalLocationsFuture;
+
   String? selectedDepartureLocation;
   String? selectedArrivalLocation;
   GlobalKey<FormState> departureKey = GlobalKey<FormState>();
@@ -24,6 +28,8 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     super.initState();
     _getUserLocation();
+    _departureLocationsFuture = fetchDepartureLocations();
+    _arrivalLocationsFuture = fetchArrivalLocations();
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -88,71 +94,70 @@ class _MapPageState extends State<MapPage> {
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       children: <Widget>[
-                        DropdownButtonFormField<String>(
-                          menuMaxHeight: 250.0,
-                          key: departureKey,
-                          value: selectedDepartureLocation,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedDepartureLocation = newValue;
-                            });
+                        FutureBuilder<List<String>>(
+                          future: _departureLocationsFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Center(child: Text('No departure locations found.'));
+                            } else {
+                              return DropdownButtonFormField<String>(
+                                menuMaxHeight: 250.0,
+                                key: departureKey,
+                                value: selectedDepartureLocation,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedDepartureLocation = newValue;
+                                  });
+                                },
+                                items: snapshot.data!.map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                decoration: const InputDecoration(
+                                  hintText: 'Lieu de départ',
+                                ),
+                              ).padding(bottom: 10);
+                            }
                           },
-                          items: <String>[
-                            'Paris',
-                            'Lyon',
-                            'Marseille',
-                            'Nice',
-                            'Paris',
-                            'Lyon',
-                            'Marseille',
-                            'Nice',
-                            'Paris',
-                            'Lyon',
-                            'Marseille',
-                            'Nice',
-                            'Paris',
-                            'Lyon',
-                            'Marseille',
-                            'Nice',
-                            'Paris',
-                            'Lyon',
-                            'Marseille',
-                            'Nice',
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          decoration: const InputDecoration(
-                            hintText: 'Lieu de départ',
-                          ),
-                        ).padding(bottom: 10),
-
-                        DropdownButtonFormField<String>(
-                          menuMaxHeight: 250.0,
-                          key: arrivalKey,
-                          value: selectedArrivalLocation,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedArrivalLocation = newValue;
-                            });
+                        ),
+                        FutureBuilder<List<String>>(
+                          future: _arrivalLocationsFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(child: Text('Error: ${snapshot.error}'));
+                            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Center(child: Text('No arrival locations found.'));
+                            } else {
+                              return DropdownButtonFormField<String>(
+                                menuMaxHeight: 250.0,
+                                key: arrivalKey,
+                                value: selectedArrivalLocation,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedArrivalLocation = newValue;
+                                  });
+                                },
+                                items: snapshot.data!.map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                decoration: const InputDecoration(
+                                  hintText: "Lieu d'arrivée",
+                                ),
+                              ).padding(bottom: 20);
+                            }
                           },
-                          items: <String>[
-                            'New York',
-                            'Los Angeles',
-                            'Chicago',
-                            'San Francisco',
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          decoration: const InputDecoration(
-                            hintText: "Lieu d'arrivée",
-                          ),
-                        ).padding(bottom: 20),
+                        ),
                         ElevatedButton(
                           onPressed: () {
                             print('Departure: $selectedDepartureLocation');
