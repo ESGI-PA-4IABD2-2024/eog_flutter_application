@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'map_locations.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:http/http.dart' as http;
 import 'package:styled_widget/styled_widget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -159,13 +161,23 @@ class _MapPageState extends State<MapPage> {
                           },
                         ),
                         ElevatedButton(
-                          onPressed: () {
-                            print('Departure: $selectedDepartureLocation');
-                            print('Arrival: $selectedArrivalLocation');
-
+                          onPressed: () async {
+                            String? departure = selectedDepartureLocation;
+                            String? arrival = selectedArrivalLocation;
+                            String apiUrl = 'http://192.168.0.202:8000/departure-arrival/$departure/$arrival';
+                            try {
+                              http.Response response = await http.get(Uri.parse(apiUrl));
+                              if (response.statusCode == 200) {
+                                print('Réponse de l\'API: ${response.body}');
+                              } else {
+                                print('Erreur: ${response.statusCode}');
+                                print('Message: ${response.body}');
+                              }
+                            } catch (e) {
+                              print('Erreur de connexion: $e');
+                            }
                           },
-                          child: const Text('Chercher les trajets possibles')
-                              .padding(all: 10),
+                          child: const Text('Chercher les trajets possibles').padding(all: 10),
                         ),
                       ],
                     ),
