@@ -39,6 +39,9 @@ dependencies:
   location: ^6.0.1
   styled_widget: ^0.4.1
   http: ^1.2.1
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+  mysql1: ^0.20.0
 
 dev_dependencies:
   flutter_test:

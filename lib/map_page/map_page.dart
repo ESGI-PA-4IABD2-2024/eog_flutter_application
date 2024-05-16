@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'map_locations.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
