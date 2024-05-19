@@ -13,7 +13,7 @@ Future<List<String>> fetchArrivalLocations() async {
 }
 
 Future<String?> fetchStationsData() async {
-  String apiUrl = 'http://192.168.0.202:8000/request/stations';
+  String apiUrl = 'http://89.168.61.12:25190/request/stations';
   try {
     http.Response response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
