@@ -17,7 +17,7 @@ Future<String?> fetchStationsData() async {
   try {
     http.Response response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
-      return response.body;
+      return utf8.decode(response.bodyBytes);
     } else {
       print('Erreur: ${response.statusCode}');
       return null;
