@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:styled_widget/styled_widget.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapPage extends StatefulWidget {
@@ -105,23 +106,23 @@ class _MapPageState extends State<MapPage> {
                             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                               return const Center(child: Text('No departure locations found.'));
                             } else {
-                              return DropdownButtonFormField<String>(
-                                menuMaxHeight: 250.0,
+                              return DropdownSearch<String>(
                                 key: departureKey,
-                                value: selectedDepartureLocation,
+                                items: snapshot.data!,
+                                selectedItem: selectedDepartureLocation,
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     selectedDepartureLocation = newValue;
                                   });
                                 },
-                                items: snapshot.data!.map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                decoration: const InputDecoration(
-                                  hintText: 'Lieu de départ',
+                                dropdownDecoratorProps: const DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                    hintText: 'Lieu de départ',
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
+                                    ),
+                                  ),
                                 ),
                               ).padding(bottom: 10);
                             }
@@ -137,23 +138,23 @@ class _MapPageState extends State<MapPage> {
                             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                               return const Center(child: Text('No arrival locations found.'));
                             } else {
-                              return DropdownButtonFormField<String>(
-                                menuMaxHeight: 250.0,
+                              return DropdownSearch<String>(
                                 key: arrivalKey,
-                                value: selectedArrivalLocation,
+                                items: snapshot.data!,
+                                selectedItem: selectedArrivalLocation,
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     selectedArrivalLocation = newValue;
                                   });
                                 },
-                                items: snapshot.data!.map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                decoration: const InputDecoration(
-                                  hintText: "Lieu d'arrivée",
+                                dropdownDecoratorProps: const DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                    hintText: "Lieu d'arrivée",
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
+                                    ),
+                                  ),
                                 ),
                               ).padding(bottom: 20);
                             }
@@ -176,7 +177,7 @@ class _MapPageState extends State<MapPage> {
                               print('Erreur de connexion: $e');
                             }
                           },
-                          child: const Text('Chercher les trajets possibles').padding(all: 10),
+                          child: const Text('Chercher les trajets possibles !').padding(all: 10),
                         ),
                       ],
                     ),
