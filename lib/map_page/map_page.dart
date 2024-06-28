@@ -1,3 +1,6 @@
+import 'dart:convert';
+import '../road_page/road_page.dart';
+import '../road_page/road_page_error.dart';
 import 'map_locations.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
@@ -169,12 +172,28 @@ class _MapPageState extends State<MapPage> {
                               http.Response response = await http.get(Uri.parse(apiUrl));
                               if (response.statusCode == 200) {
                                 print('Réponse de l\'API: ${response.body}');
+                                final responseData = jsonDecode(response.body);
+                                // Navigate to RoadPage
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => RoadPage(responseData: responseData)),
+                                );
                               } else {
                                 print('Erreur: ${response.statusCode}');
                                 print('Message: ${response.body}');
+                                // Navigate to ErrorRoadPage
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const ErrorRoadPage()),
+                                );
                               }
                             } catch (e) {
                               print('Erreur de connexion: $e');
+                              // Navigate to ErrorRoadPage in case of a connection error
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const ErrorRoadPage()),
+                              );
                             }
                           },
                           child: const Text('Chercher les trajets possibles !').padding(all: 10),
