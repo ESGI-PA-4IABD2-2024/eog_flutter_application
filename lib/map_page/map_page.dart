@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../config.dart';
 import '../road_page/road_page.dart';
 import '../road_page/road_page_error.dart';
 import 'map_locations.dart';
@@ -23,7 +24,6 @@ class _MapPageState extends State<MapPage> {
 
   late Future<List<String>> _departureLocationsFuture;
   late Future<List<String>> _arrivalLocationsFuture;
-
   String? selectedDepartureLocation;
   String? selectedArrivalLocation;
   GlobalKey<FormState> departureKey = GlobalKey<FormState>();
@@ -80,7 +80,6 @@ class _MapPageState extends State<MapPage> {
         colorSchemeSeed: Colors.green[200],
       ),
       home: Scaffold(
-
         body: Column(
           children: <Widget>[
             Expanded(
@@ -120,12 +119,16 @@ class _MapPageState extends State<MapPage> {
                                 },
                                 dropdownDecoratorProps: const DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
+                                    labelText: 'Lieu de départ',
                                     hintText: 'Lieu de départ',
                                     contentPadding: EdgeInsets.symmetric(
                                       horizontal: 10,
                                       vertical: 5,
                                     ),
                                   ),
+                                ),
+                                popupProps: const PopupProps.menu(
+                                  showSearchBox: true,
                                 ),
                               ).padding(bottom: 10);
                             }
@@ -152,12 +155,16 @@ class _MapPageState extends State<MapPage> {
                                 },
                                 dropdownDecoratorProps: const DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
+                                    labelText: "Lieu d'arrivée",
                                     hintText: "Lieu d'arrivée",
                                     contentPadding: EdgeInsets.symmetric(
                                       horizontal: 10,
                                       vertical: 5,
                                     ),
                                   ),
+                                ),
+                                popupProps: const PopupProps.menu(
+                                  showSearchBox: true,
                                 ),
                               ).padding(bottom: 20);
                             }
@@ -167,7 +174,8 @@ class _MapPageState extends State<MapPage> {
                           onPressed: () async {
                             String? departure = selectedDepartureLocation;
                             String? arrival = selectedArrivalLocation;
-                            String apiUrl = 'http://89.168.61.12:25190/departure-arrival/$departure/$arrival';
+
+                            String apiUrl = '${Config.apiUrl}/departure-arrival/$departure/$arrival';
                             try {
                               http.Response response = await http.get(Uri.parse(apiUrl));
                               if (response.statusCode == 200) {
@@ -196,7 +204,7 @@ class _MapPageState extends State<MapPage> {
                               );
                             }
                           },
-                          child: const Text('Chercher les trajets possibles !').padding(all: 10),
+                          child: const Text('Chercher les trajets possibles').padding(all: 10),
                         ),
                       ],
                     ),

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import '../config.dart';
 import 'package:http/http.dart' as http;
+
 
 Future<List<String>> fetchDepartureLocations() async {
   final List<Map<String, String>> stations = await fetchStationList();
@@ -13,7 +15,7 @@ Future<List<String>> fetchArrivalLocations() async {
 }
 
 Future<String?> fetchStationsData() async {
-  String apiUrl = 'http://89.168.61.12:25190/request/stations';
+  String apiUrl = '${Config.apiUrl}/request/stations';
   try {
     http.Response response = await http.get(Uri.parse(apiUrl));
     if (response.statusCode == 200) {

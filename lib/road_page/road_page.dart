@@ -10,7 +10,7 @@ class RoadPage extends StatelessWidget {
     List<Widget> nodes = [];
 
     // Add top padding to account for Dynamic Island
-    nodes.add(const SizedBox(height: 50));
+    nodes.add(const SizedBox(height: 60));
 
     // Get the keys in the order they appear in the JSON
     List<String> keys = responseData.keys.toList();
