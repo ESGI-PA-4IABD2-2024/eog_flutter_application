@@ -9,7 +9,7 @@ class NotImplementedPage extends StatelessWidget {
     return const Scaffold(
       body: Center(
         child: Text(
-          'This Page is Not Implemented Yet',
+          'Coming Soon',
         ),
       ),
     );

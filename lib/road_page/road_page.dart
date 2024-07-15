@@ -21,13 +21,14 @@ class RoadPage extends StatelessWidget {
       bool isChangement = key.contains('changement');
       bool isDeparture = key.contains('departure');
       bool isArrival = key.contains('arrival');
+      bool isError = key.contains('error');
 
       nodes.add(Text(
         responseData[key],
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: (isChangement | isDeparture | isArrival) ? 18 : 14,
-          fontWeight: (isChangement | isDeparture | isArrival) ? FontWeight.bold : FontWeight.normal,
+          fontSize: (isChangement | isDeparture | isArrival | isError) ? 18 : 14,
+          fontWeight: (isChangement | isDeparture | isArrival | isError) ? FontWeight.bold : FontWeight.normal,
         ),
       ));
 

@@ -90,6 +90,7 @@ class _MapPageState extends State<MapPage> {
                   zoom: 11.5,
                 ),
                 myLocationEnabled: true,
+                mapType: MapType.normal,
               ),
             ),
             Expanded(
