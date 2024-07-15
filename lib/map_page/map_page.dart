@@ -1,8 +1,13 @@
+import 'dart:convert';
+import '../config.dart';
+import '../road_page/road_page.dart';
+import '../road_page/road_page_error.dart';
 import 'map_locations.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:styled_widget/styled_widget.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapPage extends StatefulWidget {
@@ -19,7 +24,6 @@ class _MapPageState extends State<MapPage> {
 
   late Future<List<String>> _departureLocationsFuture;
   late Future<List<String>> _arrivalLocationsFuture;
-
   String? selectedDepartureLocation;
   String? selectedArrivalLocation;
   GlobalKey<FormState> departureKey = GlobalKey<FormState>();
@@ -76,7 +80,6 @@ class _MapPageState extends State<MapPage> {
         colorSchemeSeed: Colors.green[200],
       ),
       home: Scaffold(
-
         body: Column(
           children: <Widget>[
             Expanded(
@@ -87,6 +90,7 @@ class _MapPageState extends State<MapPage> {
                   zoom: 11.5,
                 ),
                 myLocationEnabled: true,
+                mapType: MapType.normal,
               ),
             ),
             Expanded(
@@ -105,23 +109,27 @@ class _MapPageState extends State<MapPage> {
                             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                               return const Center(child: Text('No departure locations found.'));
                             } else {
-                              return DropdownButtonFormField<String>(
-                                menuMaxHeight: 250.0,
+                              return DropdownSearch<String>(
                                 key: departureKey,
-                                value: selectedDepartureLocation,
+                                items: snapshot.data!,
+                                selectedItem: selectedDepartureLocation,
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     selectedDepartureLocation = newValue;
                                   });
                                 },
-                                items: snapshot.data!.map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                decoration: const InputDecoration(
-                                  hintText: 'Lieu de départ',
+                                dropdownDecoratorProps: const DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                    labelText: 'Lieu de départ',
+                                    hintText: 'Lieu de départ',
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
+                                    ),
+                                  ),
+                                ),
+                                popupProps: const PopupProps.menu(
+                                  showSearchBox: true,
                                 ),
                               ).padding(bottom: 10);
                             }
@@ -137,23 +145,27 @@ class _MapPageState extends State<MapPage> {
                             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                               return const Center(child: Text('No arrival locations found.'));
                             } else {
-                              return DropdownButtonFormField<String>(
-                                menuMaxHeight: 250.0,
+                              return DropdownSearch<String>(
                                 key: arrivalKey,
-                                value: selectedArrivalLocation,
+                                items: snapshot.data!,
+                                selectedItem: selectedArrivalLocation,
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     selectedArrivalLocation = newValue;
                                   });
                                 },
-                                items: snapshot.data!.map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                decoration: const InputDecoration(
-                                  hintText: "Lieu d'arrivée",
+                                dropdownDecoratorProps: const DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                    labelText: "Lieu d'arrivée",
+                                    hintText: "Lieu d'arrivée",
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
+                                    ),
+                                  ),
+                                ),
+                                popupProps: const PopupProps.menu(
+                                  showSearchBox: true,
                                 ),
                               ).padding(bottom: 20);
                             }
@@ -163,17 +175,34 @@ class _MapPageState extends State<MapPage> {
                           onPressed: () async {
                             String? departure = selectedDepartureLocation;
                             String? arrival = selectedArrivalLocation;
-                            String apiUrl = 'http://89.168.61.12:25190/departure-arrival/$departure/$arrival';
+
+                            String apiUrl = '${Config.apiUrl}/departure-arrival/$departure/$arrival';
                             try {
                               http.Response response = await http.get(Uri.parse(apiUrl));
                               if (response.statusCode == 200) {
                                 print('Réponse de l\'API: ${response.body}');
+                                final responseData = jsonDecode(response.body);
+                                // Navigate to RoadPage
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => RoadPage(responseData: responseData)),
+                                );
                               } else {
                                 print('Erreur: ${response.statusCode}');
                                 print('Message: ${response.body}');
+                                // Navigate to ErrorRoadPage
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const ErrorRoadPage()),
+                                );
                               }
                             } catch (e) {
                               print('Erreur de connexion: $e');
+                              // Navigate to ErrorRoadPage in case of a connection error
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const ErrorRoadPage()),
+                              );
                             }
                           },
                           child: const Text('Chercher les trajets possibles').padding(all: 10),

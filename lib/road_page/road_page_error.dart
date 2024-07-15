@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class NotImplementedPage extends StatelessWidget {
-  const NotImplementedPage({super.key});
+class ErrorRoadPage extends StatelessWidget {
+  const ErrorRoadPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +9,7 @@ class NotImplementedPage extends StatelessWidget {
     return const Scaffold(
       body: Center(
         child: Text(
-          'Coming Soon',
+          'An error occur. Try again later',
         ),
       ),
     );
